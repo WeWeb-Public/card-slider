@@ -339,34 +339,7 @@ export default {
 
         async openOptions() {
             try {
-                let editList = {
-                    WWSLIDER_CONFIG: {
-                        title: {
-                            en: 'Edit section',
-                            fr: 'Editer la section'
-                        },
-                        desc: {
-                            en: 'Edit section per line cards and navigation dots color',
-                            fr: 'Editer le nombre de carte par ligne et la couleur des points de navigation'
-                        },
-                        icon: 'wwi wwi-config',
-                        shortcut: 'g',
-                        next: 'WWSLIDER_CUSTOM'
-                    },
 
-                }
-
-                wwLib.wwPopups.addStory('WWSLIDER_CONFIG', {
-                    title: {
-                        en: 'Configuration',
-                        fr: 'Configurer'
-                    },
-                    type: 'wwPopupEditWwObject',
-                    buttons: null,
-                    storyData: {
-                        list: editList
-                    }
-                })
                 wwLib.wwPopups.addStory('WWSLIDER_CUSTOM', {
                     title: {
                         en: 'Fill in code',
@@ -416,7 +389,7 @@ export default {
                     }
                 })
                 let options = {
-                    firstPage: 'WWSLIDER_CONFIG',
+                    firstPage: 'WWSLIDER_CUSTOM',
                     data: {
                         columnPerLine: this.section.data.thumbnailsPerLine,
                         section: this.section,
@@ -485,16 +458,14 @@ export default {
     @media (min-width: 768px) {
         width: 80%;
     }
-    @media (min-width: 992px) {
-        width: 80%;
-    }
+
     @media (min-width: 1200px) {
         width: 70%;
     }
     .container-center {
         display: flex;
         transition: transform 0.5s ease;
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -591,14 +562,14 @@ export default {
 }
 .hidden-mobile {
     display: none;
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
         display: block;
     }
 }
 .mobile-wrapper {
     display: block;
     position: relative;
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
         display: none;
     }
 }
