@@ -467,7 +467,7 @@ export default {
     }
 
     @media (min-width: 1200px) {
-        width: 70%;
+        width: 90%;
     }
     .container-center {
         display: flex;
