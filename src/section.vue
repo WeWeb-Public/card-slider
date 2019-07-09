@@ -4,7 +4,7 @@
 
 <!-- This is your HTML -->
 <template>
-    <div>
+    <div :style="customStyle">
         <!-- wwManager:start -->
         <wwSectionEditMenu :sectionCtrl="sectionCtrl" :options="openOptions"></wwSectionEditMenu>
         <!-- wwManager:end -->
@@ -29,7 +29,7 @@
                     <!-- wwManager:start -->
                     <wwContextMenu
                         tag="div"
-                        class="contextmenu"
+                        class="contextmenu contextmenu-center"
                         v-if="editMode"
                         @ww-add-before="addFeature(index, 'before')"
                         @ww-add-after="addFeature(index, 'after')"
@@ -147,6 +147,12 @@ export default {
         },
         cardWidth() {
             return { 'width': 'calc(' + (100 / this.featuresLength) + '% - 50px)' }
+        },
+        customStyle() {
+            return {
+                '--thumbnailBorderRadius': this.section.data.thumbnailBorderRadius,
+                '--shadowConfig': this.section.data.shadowConfig,
+            }
         }
     },
 
@@ -156,6 +162,10 @@ export default {
         //Initialize section data
         this.section.data = this.section.data || {};
         this.section.data.dotColor = this.section.data.dotColor || "#9013FE"
+        this.section.data.thumbnailBorderRadius =
+            this.section.data.thumbnailBorderRadius || "7px"
+        this.section.data.shadowConfig =
+            this.section.data.shadowConfig || "0 10px 40px 0 rgba(113, 124, 137, 0.2)"
 
         if (!this.section.data.bg) {
             this.section.data.bg = wwLib.wwObject.getDefault({
@@ -182,7 +192,6 @@ export default {
                     },
                 )
             }
-
             needUpdate = true;
         }
 
@@ -371,6 +380,32 @@ export default {
                             },
                             {
                                 label: {
+                                    en: 'Border radius:',
+                                    fr: 'Arrondis des coins :'
+                                },
+                                type: 'text',
+                                key: 'thumbnailBorderRadius',
+                                valueData: 'section.data.thumbnailBorderRadius',
+                                desc: {
+                                    en: 'Banner border radius: in order top-left | top-right | bottom-right | bottom-left or a single value for all ',
+                                    fr: 'La bordure des coins de la bannière : dans l\'ordre en haut à gauche | en haut à droite | en bas à droite | en bas à gauche ou une seule valeur pour tous :'
+                                }
+                            },
+                            {
+                                label: {
+                                    en: 'Banner shadow config:',
+                                    fr: 'Configuration de l\'ombre de la bannière :'
+                                },
+                                type: 'text',
+                                key: 'shadowConfig',
+                                valueData: 'section.data.shadowConfig',
+                                desc: {
+                                    en: 'Box-shadow of the banner: offset-x | offset-y | blur-radius | spread-radius | color',
+                                    fr: 'L\'ombre de la bannière : offset-x | offset-y | blur-radius | spread-radius | color'
+                                }
+                            },
+                            {
+                                label: {
                                     en: 'Navigation dots color:',
                                     fr: 'Couleur des points de navigations :'
                                 },
@@ -382,6 +417,7 @@ export default {
                                     fr: 'Changer la couleur des points de navigations :'
                                 },
                             },
+
 
                         ]
                     },
@@ -408,6 +444,12 @@ export default {
                 if (typeof (result) != 'undefined') {
                     if (typeof (result.dotsColor) != 'undefined') {
                         this.section.data.dotColor = result.dotsColor
+                    }
+                    if (typeof (result.shadowConfig) != 'undefined') {
+                        this.section.data.shadowConfig = result.shadowConfig
+                    }
+                    if (typeof (result.thumbnailBorderRadius) != 'undefined') {
+                        this.section.data.thumbnailBorderRadius = result.thumbnailBorderRadius
                     }
                     if (result.columnPerLine) {
                         this.section.data.thumbnailsPerLine = result.columnPerLine;
@@ -482,8 +524,8 @@ export default {
             margin: 30px 0 30px 15px;
             background-color: white;
             min-height: 50px;
-            box-shadow: 0 10px 40px 0 rgba(113, 124, 137, 0.2);
-            border-radius: 7px;
+            box-shadow: var(--shadowConfig);
+            border-radius: var(--thumbnailBorderRadius);
             overflow: hidden;
             transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
             .forehead-banner {
