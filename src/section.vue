@@ -11,14 +11,7 @@
         <wwObject class="background" :ww-object="section.data.bg" ww-category="background"></wwObject>
         <!--TOP WWOBJS-->
         <div class="top-ww-objs">
-            <wwLayoutColumn
-                tag="div"
-                ww-default="ww-image"
-                :ww-list="section.data.topWwObjs"
-                class="top-ww-obj"
-                @ww-add="add(section.data.topWwObjs, $event)"
-                @ww-remove="remove(section.data.topWwObjs, $event)"
-            >
+            <wwLayoutColumn tag="div" ww-default="ww-image" :ww-list="section.data.topWwObjs" class="top-ww-obj" @ww-add="add(section.data.topWwObjs, $event)" @ww-remove="remove(section.data.topWwObjs, $event)">
                 <wwObject v-for="topWwObj in section.data.topWwObjs" :key="topWwObj.uniqueId" :ww-object="topWwObj"></wwObject>
             </wwLayoutColumn>
         </div>
@@ -27,14 +20,7 @@
             <div class="container-center">
                 <div class="thumbnail-container" v-for="(feature, index) in section.data.features" :key="feature.uniqueId" :style="columnWidth">
                     <!-- wwManager:start -->
-                    <wwContextMenu
-                        tag="div"
-                        class="contextmenu contextmenu-center"
-                        v-if="editMode"
-                        @ww-add-before="addFeature(index, 'before')"
-                        @ww-add-after="addFeature(index, 'after')"
-                        @ww-remove="removeFeature(index)"
-                    >
+                    <wwContextMenu tag="div" class="contextmenu contextmenu-center" v-if="editMode" @ww-add-before="addFeature(index, 'before')" @ww-add-after="addFeature(index, 'after')" @ww-remove="removeFeature(index)">
                         <div class="wwi wwi-config"></div>
                     </wwContextMenu>
                     <!-- wwManager:end -->
@@ -47,25 +33,11 @@
             </div>
         </div>
 
-        <v-touch
-            ref="swiper"
-            :enabled="!editMode"
-            @swipeleft="nextSlide()"
-            @swiperight="prevSlide()"
-            :swipe-options="{ direction: 'horizontal', threshold: 10, velocity: 0.2 }"
-            class="container mobile-wrapper"
-        >
+        <v-touch ref="swiper" :enabled="!editMode" @swipeleft="nextSlide()" @swiperight="prevSlide()" :swipe-options="{ direction: 'horizontal', threshold: 10, velocity: 0.2 }" class="container mobile-wrapper">
             <div class="container-center" :style="[mobileStyle, mobileTransition]">
                 <div class="thumbnail-container" v-for="feature in section.data.features" :key="feature.uniqueId" :style="cardWidth">
                     <!-- wwManager:start -->
-                    <wwContextMenu
-                        tag="div"
-                        class="contextmenu contextmenu-center"
-                        v-if="editMode"
-                        @ww-add-before="addFeature(index, 'before')"
-                        @ww-add-after="addFeature(index, 'after')"
-                        @ww-remove="removeFeature(index)"
-                    >
+                    <wwContextMenu tag="div" class="contextmenu contextmenu-center" v-if="editMode" @ww-add-before="addFeature(index, 'before')" @ww-add-after="addFeature(index, 'after')" @ww-remove="removeFeature(index)">
                         <div class="wwi wwi-config"></div>
                     </wwContextMenu>
                     <!-- wwManager:end -->
@@ -77,12 +49,7 @@
                 </div>
             </div>
             <div class="content-dots-wrapper">
-                <li
-                    v-for="(dot, index) in section.data.features"
-                    class="content-dot"
-                    :style="{'background': ((sliderPosition == index) ? section.data.dotColor : ''), 'border-color': section.data.dotColor}"
-                    :key="dot.uniqueId"
-                >
+                <li v-for="(dot, index) in section.data.features" class="content-dot" :style="{'background': ((sliderPosition == index) ? section.data.dotColor : ''), 'border-color': section.data.dotColor}" :key="dot.uniqueId">
                     <div class="dot" @click="switchToIndex(sliderPosition, index)"></div>
                 </li>
             </div>
@@ -90,14 +57,7 @@
 
         <!--BOTTOM WWOBJS-->
         <div class="bottom-ww-objs">
-            <wwLayoutColumn
-                tag="div"
-                ww-default="ww-image"
-                :ww-list="section.data.bottomWwObjs"
-                class="top-ww-obj"
-                @ww-add="add(section.data.bottomWwObjs, $event)"
-                @ww-remove="remove(section.data.bottomWwObjs, $event)"
-            >
+            <wwLayoutColumn tag="div" ww-default="ww-image" :ww-list="section.data.bottomWwObjs" class="top-ww-obj" @ww-add="add(section.data.bottomWwObjs, $event)" @ww-remove="remove(section.data.bottomWwObjs, $event)">
                 <wwObject v-for="bottomWwObj in section.data.bottomWwObjs" :key="bottomWwObj.uniqueId" :ww-object="bottomWwObj"></wwObject>
             </wwLayoutColumn>
         </div>
@@ -111,7 +71,6 @@
 const VueTouch = require('vue-touch')
 
 Vue.use(VueTouch, { name: 'v-touch' })
-import { getNewFeature } from "./defaultFeature"
 
 export default {
     name: "__COMPONENT_NAME__",
@@ -304,7 +263,7 @@ export default {
             try {
                 const up = (where == 'after') ? parseInt(1) : 0;
                 const index = _index + up
-                const newCard = getNewFeature()
+                const newCard = this.section.data.features[0]
 
                 this.section.data.features.splice(index, 0, newCard);
                 this.sectionCtrl.update(this.section);
@@ -314,10 +273,18 @@ export default {
         },
         removeFeature(index) {
             try {
-                this.section.data.features.splice(index, 1);
-                if (!this.section.data.features.length) {
-                    this.addFeature(0, 'after');
+                if (this.section.data.features.length == 1) {
+                    wwLib.wwNotification.open({
+                        text: {
+                            en: '<b>You cannot remove the last card.</b> ',
+                            fr: '<b>Vous ne pouvez pas supprimer la dernière carte.</b>'
+                        },
+                        color: 'red',
+                        duration: '5000'
+                    })
+                    return;
                 }
+                this.section.data.features.splice(index, 1);
                 this.sectionCtrl.update(this.section);
                 this.prevSlide()
             } catch (error) {
