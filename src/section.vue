@@ -263,7 +263,8 @@ export default {
             try {
                 const up = (where == 'after') ? parseInt(1) : 0;
                 const index = _index + up
-                const newCard = this.section.data.features[0]
+                let newCard = JSON.parse(JSON.stringify(this.section.data.features[0]))
+                wwLib.wwUtils.changeUniqueIds(newCard)
 
                 this.section.data.features.splice(index, 0, newCard);
                 this.sectionCtrl.update(this.section);
